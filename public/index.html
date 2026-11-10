@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#111827">
+  <meta name="description" content="Generate, customize and scan QR codes privately with QRVerse. No account or cloud database required.">
+  <title>QRVerse — Every QR, one place</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>
+  <script src="/js/app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#"><span class="brand-mark">⌗</span><span>QR<span class="brand-accent">Verse</span></span></a>
+    <nav aria-label="Main navigation">
+      <a href="#generator">Generate</a><a href="#scanner">Scan</a><a href="#history">My history</a>
+    </nav>
+    <span class="privacy-pill"><span></span> No cloud database</span>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="eyebrow">YOUR EVERYDAY QR TOOLKIT</div>
+      <h1>Every QR.<br><span>One place.</span></h1>
+      <p>Create, personalize and scan QR codes in seconds. No account. Your history stays in this browser.</p>
+      <a class="button button-primary" href="#generator">Create a QR code <span>→</span></a>
+    </section>
+
+    <section class="workspace" id="generator">
+      <div class="section-heading">
+        <div><div class="eyebrow">QR GENERATOR</div><h2>Create your QR code</h2></div>
+        <span class="step-label">01 / GENERATE</span>
+      </div>
+
+      <div class="generator-grid">
+        <div class="panel form-panel">
+          <label class="field-label" for="qrType">What kind of QR do you need?</label>
+          <select id="qrType">
+            <option value="url">Website URL</option>
+            <option value="text">Plain text</option>
+            <option value="wifi">Wi-Fi connection</option>
+            <option value="email">Email</option>
+            <option value="phone">Phone number</option>
+            <option value="sms">SMS message</option>
+            <option value="whatsapp">WhatsApp chat</option>
+            <option value="contact">Contact card</option>
+            <option value="location">Map location</option>
+            <option value="upi">UPI payment</option>
+            <option value="event">Event details</option>
+          </select>
+
+          <div id="dynamicFields" class="dynamic-fields"></div>
+
+          <div class="divider"></div>
+          <div class="field-row">
+            <div><label class="field-label" for="darkColor">QR colour</label><input id="darkColor" type="color" value="#111827"></div>
+            <div><label class="field-label" for="lightColor">Background</label><input id="lightColor" type="color" value="#ffffff"></div>
+            <div><label class="field-label" for="qrSize">Size</label><select id="qrSize"><option value="256">256 px</option><option value="512" selected>512 px</option><option value="1024">1024 px</option></select></div>
+          </div>
+
+          <label class="field-label" for="logoFile">Add a centre logo (optional)</label>
+          <input id="logoFile" class="file-input" type="file" accept="image/png,image/jpeg,image/webp">
+          <p class="hint">Use a small logo and keep enough contrast for reliable scanning.</p>
+
+          <button id="generateBtn" class="button button-primary full-button">Generate QR code <span>→</span></button>
+          <p id="formMessage" class="message" role="status"></p>
+        </div>
+
+        <div class="panel preview-panel">
+          <div class="preview-top"><span class="field-label">LIVE PREVIEW</span><span class="live-dot">● READY</span></div>
+          <div id="qrPlaceholder" class="qr-placeholder"><div class="placeholder-symbol">⌗</div><strong>Your QR appears here</strong><span>Choose a type and enter your details.</span></div>
+          <div id="qrResult" class="qr-result hidden">
+            <div class="qr-image-wrap"><canvas id="qrCanvas" width="512" height="512" aria-label="Generated QR code"></canvas></div>
+            <div class="result-actions">
+              <button id="downloadPng" class="button button-primary">Download PNG</button>
+              <button id="downloadSvg" class="button button-secondary">Download SVG</button>
+            </div>
+            <button id="printQr" class="text-button">Print QR code</button>
+          </div>
+          <p class="preview-note">Tip: test your QR code with a phone before sharing or printing it.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="workspace compact-section" id="scanner">
+      <div class="section-heading"><div><div class="eyebrow">QR SCANNER</div><h2>What's inside a QR?</h2><p class="section-subtitle">Scan with your camera or decode an image from your device.</p></div><span class="step-label">02 / SCAN</span></div>
+      <div class="panel scanner-panel">
+        <div id="reader"></div>
+        <div class="scanner-controls"><button id="startScan" class="button button-primary">Start camera</button><button id="stopScan" class="button button-secondary" disabled>Stop camera</button><label class="button button-secondary upload-label">Scan an image<input id="scanFile" type="file" accept="image/*" hidden></label></div>
+        <div id="scanResult" class="scan-result hidden" aria-live="polite"><strong>Decoded content</strong><p id="decodedText"></p><button id="copyDecoded" class="text-button">Copy content</button></div>
+        <p id="scanMessage" class="message" role="status"></p>
+      </div>
+    </section>
+
+    <section class="workspace compact-section" id="bulk">
+      <div class="section-heading"><div><div class="eyebrow">BULK GENERATOR</div><h2>Make several QR codes</h2><p class="section-subtitle">Enter one item per line. Download all generated codes in a ZIP file.</p></div><span class="step-label">03 / BULK</span></div>
+      <div class="panel bulk-panel">
+        <label class="field-label" for="bulkInput">URLs or text (one per line)</label>
+        <textarea id="bulkInput" rows="5" placeholder="https://example.com&#10;https://openai.com&#10;My contact details"></textarea>
+        <div class="bulk-footer"><span id="bulkCount">0 / 30 items</span><button id="bulkGenerate" class="button button-primary">Generate ZIP</button></div>
+        <p id="bulkMessage" class="message" role="status"></p>
+      </div>
+    </section>
+
+    <section class="workspace compact-section" id="history">
+      <div class="section-heading"><div><div class="eyebrow">SAVED ON THIS DEVICE</div><h2>Your recent QR codes</h2><p class="section-subtitle">History is stored only in this browser using local storage.</p></div><span class="step-label">04 / HISTORY</span></div>
+      <div class="panel history-panel"><div id="historyList" class="history-list"></div><div class="history-footer"><button id="exportHistory" class="text-button">Export history</button><button id="clearHistory" class="text-button danger-text">Clear history</button></div></div>
+    </section>
+
+    <section class="trust-strip"><div><span>✓</span><strong>No sign-up</strong><small>Start instantly</small></div><div><span>✓</span><strong>Local history</strong><small>Stored in your browser</small></div><div><span>✓</span><strong>Simple downloads</strong><small>PNG and SVG formats</small></div></section>
+  </main>
+
+  <footer><a class="brand" href="#"><span class="brand-mark">⌗</span><span>QR<span class="brand-accent">Verse</span></span></a><p>Made for quick, simple QR creation. QR content is processed to generate your code and is not saved on the server.</p><span>© <span id="year"></span> QRVerse</span></footer>
+</body>
+</html>
