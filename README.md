@@ -33,17 +33,6 @@ For normal production-style local run:
 npm start
 ```
 
-## Deploy on Render
-
-1. Push this project to a GitHub repository.
-2. Sign in to Render and choose **New → Web Service**.
-3. Connect your repository.
-4. Set **Build Command** to `npm install`.
-5. Set **Start Command** to `npm start`.
-6. Choose a plan and deploy. Render supplies the `PORT` environment variable automatically.
-7. Open the public `onrender.com` URL.
-
-No database or environment variables are required.
 
 ## API
 
